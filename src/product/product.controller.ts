@@ -1,4 +1,4 @@
-import { Controller, Post, UseGuards, Body, Param, ParseIntPipe, Req, Get, Patch, Delete } from '@nestjs/common';
+import { Controller, Post, UseGuards, Body, Param, ParseIntPipe, Req, Get, Patch, Delete, Query } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
@@ -24,8 +24,11 @@ export class ProductController {
     }
 
     @Get()
-    async findAll() {
-        return await this.productService.findAll();
+    async findAll(
+        @Query('page', new ParseIntPipe({optional: true})) page: number = 1,
+        @Query('limit', new ParseIntPipe({optional: true})) limit: number = 10,
+    ) {
+        return await this.productService.findAll(page, limit);
     }
 
     @Get('shop/:shopId')
